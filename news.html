@@ -1,0 +1,347 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>24小时快讯</title>
+</head>
+<body>
+<h1>24小时快讯</h1>
+<ul>
+<li><a href="#1">Re: join and split with empty delimiter</a></li>
+<li><a href="#2">Re: Extendable Enum like Type?</a></li>
+<li><a href="#3">Re: Embedding Python in C</a></li>
+<li><a href="#4">Re: Embedding Python in C</a></li>
+<li><a href="#5">Re: Embedding Python in C</a></li>
+<li><a href="#6">Re: Embedding Python in C</a></li>
+<li><a href="#7">Re: Embedding Python in C</a></li>
+<li><a href="#8">Re: Embedding Python in C</a></li>
+<li><a href="#9">Re: Embedding Python in C</a></li>
+<li><a href="#10">Re: Embedding Python in C</a></li>
+</ul><h2><a name="1">Re: join and split with empty delimiter</a></h2>
+<p>On 2019-07-18 20:52, Ben Bacarisse wrote:
+> Danilo Coccia <daniloco@acm.org> writes:
+> 
+>> Il 18/07/2019 12:27, Ben Bacarisse ha scritto:
+[snip]
+>>> Of course str.split('') could be defined to work the way you expect, but
+>>> it's possible that the error is there to prompt the programmer to be
+>>> more explicit.
+>>
+>> It is even more ambiguous if you consider that any string starts with an
+>> infinite number of empty strings, followed by a character, followed by
+>> an infinite number of empty strings, followed by ...
+>> The result wouldn't fit on screen, or in memory for that!
+> 
+> Right, but that can be finessed by saying that two delimiters can't
+> overlap, which is the usual rule.  A reasonable interpretation of "not
+> overlapping" might well exclude having more the one delimiter in the
+> same place.
+> 
+The delimiters wouldn't be overlapping, they'd be adjacent, but it does 
+seem reasonable not to split on an empty delimiter more than once at a 
+certain position. That's what a regex split (usually) does (in the re 
+module since Python 3.7, and in other regex implementations).</p>
+<h2><a name="2">Re: Extendable Enum like Type?</a></h2>
+<p>On 18/07/19 18:14, Ethan Furman wrote:
+> On 07/18/2019 06:04 AM, Antoon Pardon wrote:
+>
+>> I am experimenting with writing an Earley Parser. Now I would like to
+>> have the non-terminals from the grammer I am reading in, be represented
+>> bye an enum like type. So that if the grammer contains the following
+>> production: Term -> Term '+' Factor I can reprensent the right hand side
+>> with a list that gets printed something like the following:
+>> [<Non_Terminal.Term:1>, '+', <Non_Terminal.Factor:2>] I am a bit at a
+>> loss right now on how to start. Can someone point me in the right
+>> direction?
+>
+> The basic method is:
+>
+> from enum import Enum     # `from aenum` [1][2] if less than Python 3.4
+>
+> Class NonTerminal(Enum):
+>     Term = 1
+>     Factor = 2
+>     ...
+>
+> The docs [3] also have a lot of information.
+>
+> Does that answer your question?
+
+I don't seem to have made myself clear. The grammar with its Terminals
+and NonTerminals is read in from a file. The program doesn't know what
+they will be.
+
+For the moment what I am thinking about is something as follows:
+
+grammar = LoadGrammer(GrammarFile)
+EnumList = ['class NonTerminal(Enum):\n']
+for Index, NonTerminal in enumerate(grammar.NonTerminals):
+    EnumList.append('    %s = %d\n' % (NonTerminal, Index))
+exec(''.join(EnumList), ..., ...)
+
+The problem with this approach is that I can't use these values until
+the whole grammer is loaded. I would prefer some way to add values
+during the loading of the grammar.
+</p>
+<h2><a name="3">Re: Embedding Python in C</a></h2>
+<p>On Thursday, July 18, 2019 at 2:01:39 PM UTC-6, Chris Angelico wrote:
+> On Fri, Jul 19, 2019 at 5:51 AM Christian Gollwitzer <auriocus@gmx.de> wrote:
+> > Once you can do this, you can proceed to call a Python function, which
+> > in C means that you invoke the function PyObject_CallObject(). A basic
+> > example is shown here:
+> >
+> > https://docs.python.org/2/extending/embedding.html#pure-embedding
+> >
+> 
+> Or, better:
+> 
+> https://docs.python.org/3/extending/embedding.html#pure-embedding
+> 
+> ChrisA
+
+I need to call a .so file, but I don't know I way to do that with PyObject. I can only seem to bring in .py files</p>
+<h2><a name="4">Re: Embedding Python in C</a></h2>
+<p>On Sat, Jul 20, 2019 at 12:16 AM Jesse Ibarra
+<jesse.ibarra.1996@gmail.com> wrote:
+>
+> On Thursday, July 18, 2019 at 2:01:39 PM UTC-6, Chris Angelico wrote:
+> > On Fri, Jul 19, 2019 at 5:51 AM Christian Gollwitzer <auriocus@gmx.de> wrote:
+> > > Once you can do this, you can proceed to call a Python function, which
+> > > in C means that you invoke the function PyObject_CallObject(). A basic
+> > > example is shown here:
+> > >
+> > > https://docs.python.org/2/extending/embedding.html#pure-embedding
+> > >
+> >
+> > Or, better:
+> >
+> > https://docs.python.org/3/extending/embedding.html#pure-embedding
+> >
+> > ChrisA
+>
+> I need to call a .so file, but I don't know I way to do that with PyObject. I can only seem to bring in .py files
+
+I have vastly insufficient context to be able to even attempt to answer this.
+
+ChrisA</p>
+<h2><a name="5">Re: Embedding Python in C</a></h2>
+<p>On Thursday, July 18, 2019 at 1:46:05 PM UTC-6, Christian Gollwitzer wrote:
+> Am 18.07.19 um 16:18 schrieb Jesse Ibarra:
+> > On Wednesday, July 17, 2019 at 2:20:51 PM UTC-6, Christian Gollwitzer w=
+rote:
+> >> What level of integration do you want to achieve? Do you want
+> >>
+> >> a) to call Python functions from Smalltalk
+> >> b) call Smalltalk functions from Python
+> >> c) pass callbacks around, e.g. use a Smalltalk function within a Pytho=
+n
+> >> list comprehension, and if so, which way
+> >> d) integrate the class systems - derive a Python class from a Smalltal=
+k
+> >> base or the other way round
+> >>
+>=20
+> >=20
+> > For right now, I need to call a .so file from Smalltalk. I can't explic=
+itly use Python libraries since Smalltalk does not support Python. I need t=
+o use the C/Python API (in Smalltalk) to create a bridge where I can call a=
+ .so and a function in that .so file with a PyObject (This will be called b=
+ack to Smalltalk from the .so file). I can't figure out a way to do that si=
+nce the C/API can't call C or .so files.
+> >=20
+> > sorry for the confusion on my part
+> >=20
+>=20
+> I still don't get it, sorry. To me it is unclear which part of the=20
+> integration you manage to do so far, and which part is the problem.
+>=20
+> Which Smalltalk interpreter are you using? The answer to the following=20
+> will heavily depend on that.
+>=20
+>=20
+> Suppose I'd give you a C file with the following simple function:
+>=20
+>=20
+> double add(double a, double b) {
+> 	return a+b;
+> }
+>=20
+> Do you know how to compile this code and make it usable from Smalltalk?
+>=20
+> One level up, consider a C function working on an array:
+>=20
+> double arrsum(int n, double *arr) {
+> 	double sum=3D0.0;
+> 	for (int i=3D0; i<n; i++) sum+=3Darr[i];
+> 	return sum;
+> }
+>=20
+>=20
+> How would you compile and link this with your Smalltalk implementation,=
+=20
+> such that you can pass it a Smalltalk array?
+>=20
+> Once you can do this, you can proceed to call a Python function, which=20
+> in C means that you invoke the function PyObject_CallObject(). A basic=20
+> example is shown here:
+>=20
+> https://docs.python.org/2/extending/embedding.html#pure-embedding
+>=20
+> 	Christian
+
+I am using Visualworks 8.3. I can write that double arrsum function in Smal=
+ltalk. No Problem.
+
+I can also make shared library and bring those function into Smalltalk with=
+ C (Since VW 8.3 supports C and C types). No Problem.
+
+Smalltalk does not support Python. So I can use C/API to bring in Python li=
+bs,types and files. No Problem
+
+Now ,I need to bring in shared libraries using C/Python API using Smalltalk=
+. It seems like I can't directly bring in C shared libraries (.so files). P=
+ROBLEM.
+
+HOW CAN I BRING THESE IN DIRECTLY?
+
+Why do I want to call a C shared lib (.so file) using C/Python API from Sma=
+lltalk?
+
+Because I want to make C shared libs that bring in individual Python librar=
+ies into Smalltalk, such as as (Scipy,NumPy,etc). That can be called using =
+that C/Python API in Smalltalk
+
+</p>
+<h2><a name="6">Re: Embedding Python in C</a></h2>
+<p>On Friday, July 19, 2019 at 8:17:43 AM UTC-6, Chris Angelico wrote:
+> On Sat, Jul 20, 2019 at 12:16 AM Jesse Ibarra
+> <jesse.ibarra.1996@gmail.com> wrote:
+> >
+> > On Thursday, July 18, 2019 at 2:01:39 PM UTC-6, Chris Angelico wrote:
+> > > On Fri, Jul 19, 2019 at 5:51 AM Christian Gollwitzer <auriocus@gmx.de> wrote:
+> > > > Once you can do this, you can proceed to call a Python function, which
+> > > > in C means that you invoke the function PyObject_CallObject(). A basic
+> > > > example is shown here:
+> > > >
+> > > > https://docs.python.org/2/extending/embedding.html#pure-embedding
+> > > >
+> > >
+> > > Or, better:
+> > >
+> > > https://docs.python.org/3/extending/embedding.html#pure-embedding
+> > >
+> > > ChrisA
+> >
+> > I need to call a .so file, but I don't know I way to do that with PyObject. I can only seem to bring in .py files
+> 
+> I have vastly insufficient context to be able to even attempt to answer this.
+> 
+> ChrisA
+
+Thank you for your help.
+
+If this helps. I need PyImport_Import to bring in a C shared lib. (.so file)</p>
+<h2><a name="7">Re: Embedding Python in C</a></h2>
+<p>Am 19.07.19 um 16:26 schrieb Jesse Ibarra:
+> On Friday, July 19, 2019 at 8:17:43 AM UTC-6, Chris Angelico wrote:
+>> On Sat, Jul 20, 2019 at 12:16 AM Jesse Ibarra
+>> <jesse.ibarra.1996@gmail.com> wrote:
+>>>
+>>> On Thursday, July 18, 2019 at 2:01:39 PM UTC-6, Chris Angelico wrote:
+>>>> On Fri, Jul 19, 2019 at 5:51 AM Christian Gollwitzer <auriocus@gmx.de> wrote:
+>>>>> Once you can do this, you can proceed to call a Python function, which
+>>>>> in C means that you invoke the function PyObject_CallObject(). A basic
+>>>>> example is shown here:
+>>>>>
+>>>>> https://docs.python.org/2/extending/embedding.html#pure-embedding
+>>>>>
+>>>>
+>>>> Or, better:
+>>>>
+>>>> https://docs.python.org/3/extending/embedding.html#pure-embedding
+>>>>
+>>>> ChrisA
+>>>
+>>> I need to call a .so file, but I don't know I way to do that with PyObject. I can only seem to bring in .py files
+>>
+>> I have vastly insufficient context to be able to even attempt to answer this.
+>>
+>> ChrisA
+> 
+> Thank you for your help.
+> 
+> If this helps. I need PyImport_Import to bring in a C shared lib. (.so file)
+
+So your question is which CPython function is used to load a compiled 
+Python extension (.so file). I haven't done this, but it will also be 
+not sufficient to import numpy or other packages. These larger packages 
+typically have a layer of Python code which acts as a loader and upon 
+import loads the corresponding .so files at runtime.
+
+After browsing the C-API, I would try either:
+
+PyImport_ImportModule("numpy")
+
+or even
+
+PyRun_SimpleString("import numpy")
+
+If this does not work, then maybe you need to setup the correct 
+PYTHONPATH to point to the places where these packages are installed?
+
+	Christian
+
+
+</p>
+<h2><a name="8">Re: Embedding Python in C</a></h2>
+<p>Jesse Ibarra schrieb am 17.07.19 um 20:39:
+> My options seem rather limited, I need to make a Pipeline from
+> (Smalltalk -> C -> Python) then go back (Smalltalk <- C <- Python).
+> Since Smalltalk does not support Python directly I have to settle with
+> the C/Python API
+> (https://docs.python.org/3.6/extending/embedding.html#beyond-very-high-level-embedding-an-overview).
+> Any suggestions?
+
+First of all: don't use the C-API! :-)
+
+Use Cython instead. It's a Python-to-C compiler that covers up all the ugly
+little details of talking to Python from C (importing a module is just
+"import module", and it even adapts to different Python versions
+automatically). You can keep writing Python code, and at the same time
+trivially use external C code.
+
+https://cython.org/
+
+http://docs.cython.org/en/latest/src/tutorial/
+
+For embedding Python in an external program (in case you really need to do
+that and can't live with starting Python instead of Smalltalk), here's an
+example:
+
+https://github.com/cython/cython/tree/master/Demos/embed
+
+It uses the "--embed" argument to Cython that generates a C (main) function
+to start up the CPython runtime.
+
+Stefan
+</p>
+<h2><a name="9">Re: Embedding Python in C</a></h2>
+<p>Sorry, I am not understanding. Smalltlak VW 8.3 does not support Python. I can only call Pyhton code through C/Python API.</p>
+<h2><a name="10">Re: Embedding Python in C</a></h2>
+<p>Jesse Ibarra <jesse.ibarra.1996@gmail.com> writes:
+> ...
+> Now ,I need to bring in shared libraries using C/Python API using Smalltalk. It seems like I can't directly bring in C shared libraries (.so files). PROBLEM.
+
+With Python, you typically do not load ("bring in") shared libraries
+explicitly; instead, you simply import a module; should this module
+be implemented by a shared library, it will be loaded implicitly.
+
+Thus, once you are in the Python world, shared libraries are no
+longer a problem. You told us that you already know how to
+build shared libraries and call them from Smalltalk.
+Thus, do this: ensure that the activated shared library initializes
+the [C]Python runtime (Stefan posted a link for this), use
+"Cython" to interface Python with C.
+
+</p>
+</body>
+</html>
